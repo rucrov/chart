@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     BarDataSet barDataSetSession,barDataSetShot;
     LineDataSet lineDataSetSelected;
     TextView numberSession,numberShot,numberSelected;
+    int save;
+
+    Highlight[] hh;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         BarData dataSession = new BarData(Session);
         BarData dataShot = new BarData(Shot);
         LineData dataSelected = new LineData(Selected);
-
+        numberShot.setHighlightColor(Color.RED);
         SessionChart.setData(dataSession);  //вставляем значения в графики
         ShotChart.setData(dataShot);
         SelectedChart.setData(dataSelected);
@@ -87,30 +92,40 @@ public class MainActivity extends AppCompatActivity {
         SelectedChart.invalidate();
 
 
-        ShotChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-               // dataShot.setHighlightEnabled(true);
-                if (e.getY()!=2f) {
-                    numberShot.setText(e.getX() + "");
-                  //  dataShot.setHighlightEnabled(true);
-                    numberShot.setHighlightColor(Color.RED);
-                }
-                else {
-                    numberShot.setHighlightColor(Color.BLUE);
 
-                   // dataShot.setHighlightEnabled(true);
+                ShotChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                    @Override
+                    public void onValueSelected(Entry e, Highlight h) {
+                        // dataShot.setHighlightEnabled(true);
+
+                      //  if (e.getY()!=2f) {
+                         //   numberShot.setText(e.getX() + "");
+                          //  save = (int) e.getX();
+                            //  barDataSetShot.setHighlightEnabled(false);
+
+                          //  ShotChart.notifyDataSetChanged();
+                          //  ShotChart.invalidate();
+
+                     //   }
+                        if (e.getX()==2.0) {
+                            barDataSetShot.setHighLightColor(Color.BLUE);
+                              //ShotChart.highlightValue(h);
+                            ShotChart.highlightValue(1f,0,false);
+                            hh=ShotChart.getHighlighted();
 
 
-                }
+                        }
 
-            }
+                    }
 
-            @Override
-            public void onNothingSelected() {
+                    @Override
+                    public void onNothingSelected() {
 
-            }
-        });
+                    }
+                });
+
+
+
 
     }
     private void style (){
@@ -127,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         ShotChart.getDescription().setEnabled(false);
         ShotChart.getLegend().setEnabled(false);
         ShotChart.setScaleEnabled(false);
-
 
         SelectedChart.getAxisLeft().setDrawLabels(false);
         SelectedChart.getAxisRight().setDrawLabels(false);
