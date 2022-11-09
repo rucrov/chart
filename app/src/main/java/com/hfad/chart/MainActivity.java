@@ -5,11 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -18,21 +17,20 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    BarChart chart;
-    BarDataSet lineDataSet;
+    BarChart SessionChart,ShotChart;
+    LineChart SelectedChart;
+    BarDataSet barDataSetSession,barDataSetShot;
+    LineDataSet lineDataSetSelected;
+    TextView numberSession,numberShot,numberSelected;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,42 +38,113 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Random rnd = new Random();
-        chart= findViewById(R.id.chart);
+        SessionChart = findViewById(R.id.Sessions);
+        ShotChart = findViewById(R.id.Shot);
+        SelectedChart = findViewById(R.id.Selected);
+        numberSession=  findViewById(R.id.numberSession);
+        numberShot=findViewById(R.id.numberShot);
+        numberSelected = findViewById(R.id.numberSelected);
 
-       ArrayList<BarEntry> dataVals = new ArrayList<BarEntry>();          // записываем значения
+
+
+       ArrayList<BarEntry> dataValuesSession = new ArrayList<BarEntry>();          //создаём arrayList типа BarEntry для session
+        ArrayList<BarEntry> dataValueShot = new ArrayList<BarEntry>();          // создаём arrayList типа BarEntry для shot
+        ArrayList<Entry> dataValueSelected = new ArrayList<Entry>();
+
               for (int i=0;i<10;i++) {
-                  dataVals.add(new BarEntry(i, rnd.nextInt(6)));
+                  dataValuesSession.add(new BarEntry(i, rnd.nextInt(15)));       //записывем x,y в session
+                  dataValueShot.add(new BarEntry(i, rnd.nextInt(15)+2));          //записывем x,y в shot
+                  dataValueSelected.add(new Entry(i, rnd.nextInt(15)));          //записывем x,y в selected
               }
-        lineDataSet = new BarDataSet(dataVals,"data set 1");       //запихиваем значения и запихиваем их в lineDataSet для отрисовки единственной линии
+        barDataSetSession = new BarDataSet(dataValuesSession,"Session value");       //вставляем значения в блочный график для session
+        barDataSetShot = new BarDataSet(dataValueShot,"Shot value");
+        lineDataSetSelected = new LineDataSet(dataValueSelected,"Selected value");
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();       //запихнутые значения записываем в особенный формат
+
+        ArrayList<IBarDataSet> Session = new ArrayList<>();       //запихнутые значения записываем в особенный формат
+        ArrayList<IBarDataSet> Shot = new ArrayList<>();
+        ArrayList<ILineDataSet> Selected = new ArrayList<>();
+
+        Session.add(barDataSetSession);         // добовлаем в еще формат
+        Shot.add(barDataSetShot);
+        Selected.add(lineDataSetSelected);
+
+
+        BarData dataSession = new BarData(Session);
+        BarData dataShot = new BarData(Shot);
+        LineData dataSelected = new LineData(Selected);
+
+        SessionChart.setData(dataSession);  //вставляем значения в графики
+        ShotChart.setData(dataShot);
+        SelectedChart.setData(dataSelected);
+
         style();
-        dataSets.add(lineDataSet);
+        XAxis xAxis = ShotChart.getXAxis(); // получение осей с двух сторон
+        xAxis.setLabelCount(6,true);        // настройка вертикальных полосок
+
+        SessionChart.invalidate();          // обновить график
+        ShotChart.invalidate();
+        SelectedChart.invalidate();
 
 
-        BarData data = new BarData(dataSets);
+        ShotChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+               // dataShot.setHighlightEnabled(true);
+                if (e.getY()!=2f) {
+                    numberShot.setText(e.getX() + "");
+                  //  dataShot.setHighlightEnabled(true);
+                    numberShot.setHighlightColor(Color.RED);
+                }
+                else {
+                    numberShot.setHighlightColor(Color.BLUE);
 
-        chart.setData(data);                //вставить значения в график
-        XAxis xAxis = chart.getXAxis();
-        chart.setTouchEnabled(false);
-        xAxis.setGranularityEnabled(true);
+                   // dataShot.setHighlightEnabled(true);
 
-        YAxis yAxisLeft = chart.getAxisLeft();
-        yAxisLeft.setGranularityEnabled(true);
 
-        YAxis yAxisRight = chart.getAxisRight();
+                }
 
-        chart.getXAxis().setLabelCount(3,true); // решение
-        chart.invalidate();                 // отрисовать
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
     }
-    void style(){
-        //lineDataSet.enableDashedLine(6,10,5);   //настройка определенной лини чтобы она была пунктирной
+    private void style (){
+        SessionChart.getAxisLeft().setDrawLabels(false);
+        SessionChart.getAxisRight().setDrawLabels(false);
+        SessionChart.getXAxis().setDrawLabels(false);
+        SessionChart.getDescription().setEnabled(false);
+        SessionChart.getLegend().setEnabled(false);
 
-        lineDataSet.setColor(Color.RED);
-        chart.setBorderWidth(3f);       //настройка ширины обводки
-        chart.setDrawBorders(false);    // включение обводки, она более толстая чем без включения этой настройки
-        chart.setBorderColor(Color.RED);    // настройка  цвета обводки
+
+        ShotChart.getAxisLeft().setDrawLabels(false);
+        ShotChart.getAxisRight().setDrawLabels(false);
+        ShotChart.getXAxis().setDrawLabels(false);
+        ShotChart.getDescription().setEnabled(false);
+        ShotChart.getLegend().setEnabled(false);
+        ShotChart.setScaleEnabled(false);
 
 
+        SelectedChart.getAxisLeft().setDrawLabels(false);
+        SelectedChart.getAxisRight().setDrawLabels(false);
+        SelectedChart.getXAxis().setDrawLabels(false);
+        SelectedChart.getDescription().setEnabled(false);
+        SelectedChart.getLegend().setEnabled(false);
+        SelectedChart.setTouchEnabled(false);;
+        XAxis xAxis = ShotChart.getXAxis();
+
+        YAxis yAxisLeft = SelectedChart.getAxisLeft();
+        YAxis yAxisRight = SelectedChart.getAxisRight();
+        SelectedChart.getAxisLeft().setDrawGridLines(false);
+        yAxisLeft.setSpaceBottom(0f);                   // убирание отступа от нижней части
+        yAxisLeft.setSpaceTop(0f);
+        yAxisLeft.setGranularity(0);
+
+        //  SelectedChart.setMinOffset(0);
     }
+
 }
