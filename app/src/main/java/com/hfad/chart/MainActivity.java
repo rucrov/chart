@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
     BarDataSet barDataSetSession,barDataSetShot;
     LineDataSet lineDataSetSelected;
     TextView numberSession,numberShot,numberSelected;
-    int save;
+    //int save;
 
-    Highlight[] hh;
+    Highlight save;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -96,31 +96,17 @@ public class MainActivity extends AppCompatActivity {
                 ShotChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                     @Override
                     public void onValueSelected(Entry e, Highlight h) {
-                        // dataShot.setHighlightEnabled(true);
 
-                      //  if (e.getY()!=2f) {
-                         //   numberShot.setText(e.getX() + "");
-                          //  save = (int) e.getX();
-                            //  barDataSetShot.setHighlightEnabled(false);
-
-                          //  ShotChart.notifyDataSetChanged();
-                          //  ShotChart.invalidate();
-
-                     //   }
-                        if (e.getX()==2.0) {
+                        if (e.getY()==2.0) {
                             barDataSetShot.setHighLightColor(Color.BLUE);
-                              //ShotChart.highlightValue(h);
-                            ShotChart.highlightValue(1f,0,false);
-                            hh=ShotChart.getHighlighted();
-
+                            ShotChart.highlightValue(1f,0);
 
                         }
-
                     }
 
                     @Override
                     public void onNothingSelected() {
-
+                        ShotChart.highlightValue(1f,0);           // запрет снятия фокуса с bar
                     }
                 });
 
