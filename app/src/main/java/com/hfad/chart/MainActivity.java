@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     TextView numberSession,numberShot,numberSelected;
     //int save;
 
-    Highlight save;
+    float save ;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -97,16 +97,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onValueSelected(Entry e, Highlight h) {
 
-                        if (e.getY()==2.0) {
+                        if (e.getY()!=2.0) {
+                            save = e.getX();
                             barDataSetShot.setHighLightColor(Color.BLUE);
-                            ShotChart.highlightValue(1f,0);
-
+                            ShotChart.highlightValue(h);
+                            numberShot.setText(save+"");
+                        }
+                        else {
+                            barDataSetShot.setHighLightColor(Color.BLUE);
+                            ShotChart.highlightValue(save,0);
                         }
                     }
 
                     @Override
                     public void onNothingSelected() {
-                        ShotChart.highlightValue(1f,0);           // запрет снятия фокуса с bar
+                        ShotChart.highlightValue(save,0);           // запрет снятия фокуса с bar
                     }
                 });
 
@@ -128,22 +133,62 @@ public class MainActivity extends AppCompatActivity {
         ShotChart.getDescription().setEnabled(false);
         ShotChart.getLegend().setEnabled(false);
         ShotChart.setScaleEnabled(false);
+        barDataSetShot.setHighLightColor(Color.BLUE);
+        ShotChart.highlightValue(0,0);
 
         SelectedChart.getAxisLeft().setDrawLabels(false);
         SelectedChart.getAxisRight().setDrawLabels(false);
         SelectedChart.getXAxis().setDrawLabels(false);
         SelectedChart.getDescription().setEnabled(false);
         SelectedChart.getLegend().setEnabled(false);
-        SelectedChart.setTouchEnabled(false);;
+        SelectedChart.setTouchEnabled(false);
+
+        // ShotChart.xAxis.centerAxisLabelsEnabled
         XAxis xAxis = ShotChart.getXAxis();
+        YAxis Ly = ShotChart.getAxisLeft();
+        YAxis Ry = ShotChart.getAxisRight();
+        xAxis.enableGridDashedLine(17,8,8);
+        ShotChart.getAxisLeft().setDrawGridLines(false);
+         // xAxis.setDrawAxisLine(false);
+             Ly.setDrawAxisLine(false);      // убирает левую полоску графика
+        Ly.setDrawLabels(false);
+        Ly.setDrawZeroLine(false);
+        Ly.setDrawAxisLine(false);
+        Ly.setDrawTopYLabelEntry(false);
+        Ly.setDrawGridLinesBehindData(false);       //объеденив это
+        Ly.setDrawGridLines(false);
+        xAxis.setCenterAxisLabels(true);
+        ShotChart.setDrawBorders(false);
+     //   xAxis.setGranularity(3f);
+      //  xAxis.setGranularityEnabled(true);
+        //xAxis.setDrawLabels(false);
+        ShotChart.getAxisRight().setDrawGridLines(false);
+        // xAxis.setDrawAxisLine(false);
+        Ry.setDrawAxisLine(false);      // убирает левую полоску графика
+        Ry.setDrawLabels(false);
+        Ry.setDrawZeroLine(false);
+        Ry.setDrawAxisLine(false);
+        Ry.setDrawTopYLabelEntry(false);
+        Ry.setDrawGridLinesBehindData(false);
+        Ry.setDrawGridLines(false);
+
+        //xAxis.setDrawAxisLine(false);
+     //   Ry.setEnabled(false);
+       // xAxis.setDrawGridLines(false);
+        xAxis.setDrawGridLinesBehindData(false); // и это выключяется первая вертекальная полоска
+      //  xAxis.setDrawGridLines(false);
+        //   Ry.setDrawGridLines(false);
 
         YAxis yAxisLeft = SelectedChart.getAxisLeft();
         YAxis yAxisRight = SelectedChart.getAxisRight();
-        SelectedChart.getAxisLeft().setDrawGridLines(false);
+      //  SelectedChart.getAxisLeft().setDrawGridLines(false);
         yAxisLeft.setSpaceBottom(0f);                   // убирание отступа от нижней части
         yAxisLeft.setSpaceTop(0f);
         yAxisLeft.setGranularity(0);
-
+        yAxisRight.setSpaceBottom(0f);                   // убирание отступа от нижней части
+        yAxisRight.setSpaceTop(0f);
+        yAxisRight.setGranularity(0);
+        //Ry.setGranularity(0);
         //  SelectedChart.setMinOffset(0);
     }
 
