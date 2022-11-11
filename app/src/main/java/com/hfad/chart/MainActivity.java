@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -18,6 +19,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<BarEntry> dataValueShot = new ArrayList<BarEntry>();          // создаём arrayList типа BarEntry для shot
         ArrayList<Entry> dataValueSelected = new ArrayList<Entry>();
 
-              for (int i=0;i<10;i++) {
+              for (int i=0;i<30;i++) {
                   dataValuesSession.add(new BarEntry(i, rnd.nextInt(15)));       //записывем x,y в session
                   dataValueShot.add(new BarEntry(i, rnd.nextInt(15)+2));          //записывем x,y в shot
                   dataValueSelected.add(new Entry(i, rnd.nextInt(15)));          //записывем x,y в selected
@@ -88,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setLabelCount(6,true);        // настройка вертикальных полосок
 
         SessionChart.invalidate();          // обновить график
+        ShotChart.invalidate();
+
+        ShotChart.getData().notifyDataChanged();
+        ShotChart.notifyDataSetChanged();
         ShotChart.invalidate();
         SelectedChart.invalidate();
 
@@ -165,12 +171,12 @@ public class MainActivity extends AppCompatActivity {
         ShotChart.getAxisRight().setDrawGridLines(false);
         // xAxis.setDrawAxisLine(false);
         Ry.setDrawAxisLine(false);      // убирает левую полоску графика
-        Ry.setDrawLabels(false);
-        Ry.setDrawZeroLine(false);
-        Ry.setDrawAxisLine(false);
-        Ry.setDrawTopYLabelEntry(false);
-        Ry.setDrawGridLinesBehindData(false);
-        Ry.setDrawGridLines(false);
+//       /* Ry.setDrawLabels(false);
+//        Ry.setDrawZeroLine(false);
+//        Ry.setDrawAxisLine(false);
+//        Ry.setDrawTopYLabelEntry(false);
+//        Ry.setDrawGridLinesBehindData(false);
+//        Ry.setDrawGridLines(false);*/
 
         //xAxis.setDrawAxisLine(false);
      //   Ry.setEnabled(false);
@@ -188,8 +194,6 @@ public class MainActivity extends AppCompatActivity {
         yAxisRight.setSpaceBottom(0f);                   // убирание отступа от нижней части
         yAxisRight.setSpaceTop(0f);
         yAxisRight.setGranularity(0);
-        //Ry.setGranularity(0);
-        //  SelectedChart.setMinOffset(0);
     }
 
 }
